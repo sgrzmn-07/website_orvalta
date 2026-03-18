@@ -1,64 +1,116 @@
 ---
-import { getAllPosts, formatPostDate } from "../../lib/wordpress";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  formatPostDate,
+  getAllPosts,
+  getPostIntro
+} from "../../lib/wordpress.js";
 
 const posts = await getAllPosts();
+const [featuredPost, ...remainingPosts] = posts;
 ---
 
-<div class="container">
-  <h1>Insights</h1>
+<BaseLayout
+  title="Case Studies | Orvalta"
+  description="Editorial case studies from Orvalta, powered by WordPress and rendered in Astro."
+>
+  <section class="case-hero">
+    <div class="case-hero__grid">
+      <div>
+        <p class="eyebrow">Business Stories</p>
+        <h1 class="case-hero__title">Case Studies</h1>
+      </div>
 
-  <div class="grid">
-    {posts.map(post => (
-      <a href={`/blog/${post.slug}`} class="card">
-        <div class="card-content">
-          <p class="date">{formatPostDate(post.date)}</p>
-          <h2 set:html={post.title.rendered} />
+      <div class="case-hero__support">
+        <p>
+          A curated look at how brand decisions show up in print, uniforms, packaging, and everyday customer experience.
+        </p>
+        <p>
+          Each story is pulled directly from Orvalta's live WordPress content and presented with the calmer, more editorial pacing of the main site.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {
+    featuredPost && (
+      <section class="featured-case">
+        <div class="featured-case__story">
+          <p class="section-kicker">Featured Story</p>
+          <h2 class="featured-case__title">
+            <a href={`/blog/${featuredPost.slug}/`} set:html={featuredPost.title?.rendered || "Untitled post"} />
+          </h2>
+          <p class="section-copy">{getPostIntro(featuredPost)}</p>
+
+          <div class="featured-meta">
+            <span>{formatPostDate(featuredPost.date)}</span>
+            <span>Case Study</span>
+            <span>Slug: {featuredPost.slug}</span>
+          </div>
+
+          <a class="learn-more" href={`/blog/${featuredPost.slug}/`}>Learn more</a>
         </div>
-      </a>
-    ))}
-  </div>
-</div>
 
-<style>
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 60px 20px;
-}
+        <aside class="featured-case__aside">
+          <div>
+            <p class="section-kicker">Why it matters</p>
+            <p class="aside-copy">
+              Built like the live Orvalta case studies experience: generous spacing, restrained typography, and story-first content blocks instead of a generic blog feed.
+            </p>
+          </div>
 
-h1 {
-  font-size: 42px;
-  margin-bottom: 40px;
-}
+          <ul class="aside-list">
+            <li>
+              <strong>Editorial layout</strong>
+              Structured sections and slower visual pacing.
+            </li>
+            <li>
+              <strong>Luxury tone</strong>
+              Premium cream surfaces, serif-heavy headlines, and quiet detail.
+            </li>
+            <li>
+              <strong>Read-only architecture</strong>
+              The same Astro + WordPress API flow remains untouched underneath.
+            </li>
+          </ul>
+        </aside>
+      </section>
+    )
+  }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-}
+  <section class="editorial-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Case Study Archive</p>
+        <h2>More Stories</h2>
+      </div>
 
-.card {
-  border: 1px solid #eee;
-  padding: 24px;
-  border-radius: 12px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.25s ease;
-}
+      <p class="section-copy">
+        Published WordPress posts continue below in a more structured, landing-page style format inspired by Orvalta's existing editorial pages.
+      </p>
+    </div>
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
+    {
+      remainingPosts.length === 0 ? (
+        <p class="empty-state">More published case studies will appear here as new WordPress posts go live.</p>
+      ) : (
+        <div class="editorial-grid">
+          {remainingPosts.map((post, index) => (
+            <article class="editorial-block">
+              <div class="case-number">{String(index + 2).padStart(2, "0")}</div>
 
-.date {
-  font-size: 12px;
-  color: #888;
-  margin-bottom: 10px;
-}
-
-h2 {
-  font-size: 20px;
-  line-height: 1.4;
-}
-</style>
+              <div>
+                <p class="section-kicker">{formatPostDate(post.date)}</p>
+                <h3 class="editorial-title">
+                  <a href={`/blog/${post.slug}/`} set:html={post.title?.rendered || "Untitled post"} />
+                </h3>
+                <p class="editorial-excerpt">{getPostIntro(post)}</p>
+                <a class="learn-more" href={`/blog/${post.slug}/`}>Learn more</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

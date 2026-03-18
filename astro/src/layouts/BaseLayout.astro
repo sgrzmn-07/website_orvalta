@@ -5,6 +5,14 @@ const {
   title = "Orvalta",
   description = "Read-only Astro frontend for WordPress content."
 } = Astro.props;
+
+const navItems = [
+  { label: "Home", href: "https://orvalta.com/" },
+  { label: "Inside Orvalta", href: "https://orvalta.com/about-us/" },
+  { label: "All Products", href: "https://orvalta.com/products/" },
+  { label: "Case Studies", href: "/blog/" },
+  { label: "Contact Us", href: "mailto:hello@orvalta.com" }
+];
 ---
 
 <!doctype html>
@@ -16,8 +24,64 @@ const {
     <meta name="description" content={description} />
   </head>
   <body>
-    <main class="page-shell">
+    <header class="site-header">
+      <div class="site-shell header-shell">
+        <a class="brand-wordmark" href="/blog/" aria-label="Orvalta Case Studies">
+          Orvalta
+        </a>
+
+        <nav class="site-nav" aria-label="Primary">
+          {
+            navItems.map((item) => (
+              <a href={item.href} class={item.href === "/blog/" ? "is-active" : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+
+        <a
+          class="catalog-link"
+          href="mailto:hello@orvalta.com?subject=Download%20Catalog"
+        >
+          Download Catalog
+        </a>
+      </div>
+    </header>
+
+    <main class="page-shell site-shell">
       <slot />
     </main>
+
+    <footer class="site-footer">
+      <div class="site-shell footer-grid">
+        <div>
+          <p class="footer-label">From Business to Branding</p>
+          <p class="footer-copy">
+            Editorial stories, print thinking, and brand details presented as a natural extension of the Orvalta experience.
+          </p>
+        </div>
+
+        <div>
+          <p class="footer-label">Contact us</p>
+          <p class="footer-copy">Monday-Friday: 09 AM - 6 PM</p>
+          <a class="footer-link" href="tel:+971545893747">+971 545 89 3747</a>
+          <a class="footer-link" href="mailto:hello@orvalta.com">hello@orvalta.com</a>
+        </div>
+
+        <div>
+          <p class="footer-label">Menu</p>
+          <div class="footer-menu">
+            {
+              navItems.map((item) => (
+                <a class="footer-link" href={item.href}>
+                  {item.label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

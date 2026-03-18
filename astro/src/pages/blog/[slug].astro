@@ -21,8 +21,8 @@ if (!post) {
 ---
 
 <BaseLayout title="Post | Orvalta" description="WordPress post rendered by Astro.">
-  <article class="page-card">
-    <a class="post-back" href="/blog/">&larr; Back to blog</a>
+  <article class="case-article">
+    <a class="post-back" href="/blog/">Back to case studies</a>
     <p class="eyebrow">{formatPostDate(post.date)}</p>
     <h1 set:html={post.title?.rendered || "Untitled post"} />
     <div class="post-content" set:html={post.content?.rendered || ""} />

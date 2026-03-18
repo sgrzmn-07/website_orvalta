@@ -80,7 +80,7 @@ async function getAllPosts() {
       status: "publish",
       orderby: "date",
       order: "desc",
-      _fields: "id,slug,date,link,title"
+      _fields: "id,slug,date,link,title,excerpt"
     });
 
     const pagePosts = await response.json();
@@ -102,7 +102,7 @@ async function getPostBySlug(slug) {
     slug,
     per_page: 1,
     status: "publish",
-    _fields: "id,slug,date,link,title,content"
+    _fields: "id,slug,date,link,title,excerpt,content"
   });
 
   const posts = await response.json();
@@ -122,8 +122,25 @@ function formatPostDate(dateString) {
   }).format(new Date(dateString));
 }
 
+function getPostIntro(post) {
+  const excerptHtml = post?.excerpt?.rendered || "";
+  const excerptText = excerptHtml
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\[[^\]]+\]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (excerptText) {
+    return excerptText;
+  }
+
+  return "A closer look at the ideas, choices, and details shaping this Orvalta case study.";
+}
+
 export {
   getAllPosts,
   getPostBySlug,
-  formatPostDate
+  formatPostDate,
+  getPostIntro
 };
