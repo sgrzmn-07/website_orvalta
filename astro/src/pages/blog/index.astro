@@ -1,33 +1,64 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { formatPostDate, getAllPosts } from "../../lib/wordpress.js";
+import { getAllPosts, formatPostDate } from "../../lib/wordpress";
 
 const posts = await getAllPosts();
 ---
 
-<BaseLayout title="Blog | Orvalta" description="Published posts from WordPress, rendered in Astro.">
-  <section class="page-card">
-    <p class="eyebrow">Blog</p>
-    <h1>Published Posts</h1>
-    <p class="lede">
-      This index is generated from the live WordPress REST API at build time.
-    </p>
+<div class="container">
+  <h1>Insights</h1>
 
-    {
-      posts.length === 0 ? (
-        <p class="post-meta" style="margin-top: 2rem;">No published posts were returned by WordPress.</p>
-      ) : (
-        <ul class="post-list">
-          {posts.map((post) => (
-            <li>
-              <a class="post-link" href={`/blog/${post.slug}/`}>
-                <div class="post-title" set:html={post.title?.rendered || "Untitled post"} />
-                <div class="post-meta">{formatPostDate(post.date)}</div>
-              </a>
-            </li>
-          ))}
-        </ul>
-      )
-    }
-  </section>
-</BaseLayout>
+  <div class="grid">
+    {posts.map(post => (
+      <a href={`/blog/${post.slug}`} class="card">
+        <div class="card-content">
+          <p class="date">{formatPostDate(post.date)}</p>
+          <h2 set:html={post.title.rendered} />
+        </div>
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+h1 {
+  font-size: 42px;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  border: 1px solid #eee;
+  padding: 24px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.date {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 1.4;
+}
+</style>
