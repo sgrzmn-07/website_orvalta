@@ -7,124 +7,106 @@ import {
 } from "../../lib/wordpress.js";
 
 const posts = await getAllPosts();
-const [featuredPost, ...remainingPosts] = posts;
-const totalStories = posts.length;
+const [featuredPost, secondaryPost, ...archivePosts] = posts;
 ---
 
 <BaseLayout
   title="Case Studies | Orvalta"
   description="Editorial case studies from Orvalta, powered by WordPress and rendered in Astro."
 >
-  <section class="case-landing-hero">
-    <div class="case-landing-hero__grid">
+  <section class="case-page-hero">
+    <div class="case-page-hero__heading">
+      <h1>Case Studies</h1>
+      <p class="case-page-hero__tagline">
+        Through a unique combination of design disciplines and expert operations. We deliver you - Happiness
+      </p>
+    </div>
+  </section>
+
+  <section class="case-editorial-intro">
+    <div class="case-editorial-intro__grid">
       <div>
         <p class="eyebrow">Business Stories</p>
-        <h1 class="case-landing-hero__title">Case Studies</h1>
+        <h2 class="case-editorial-intro__title">Power of A Brand</h2>
+        <p class="case-editorial-intro__subhead">
+          See how the smartest brands shape customer behavior through colors, messages, and meaning.
+        </p>
       </div>
 
-      <div class="case-landing-hero__support">
+      <div class="case-editorial-intro__copy">
         <p>
-          A curated look at how brand decisions show up in print, packaging, uniforms, and everyday customer experience.
+          In Orvalta Case Studies, we break down how brands build recognition and turn those lessons into practical ideas for your packaging, print, and uniforms.
         </p>
         <p>
-          Built like a branded landing page rather than a standard archive, this space turns live WordPress posts into a slower, more editorial Orvalta experience.
+          This page is powered by your live WordPress posts, but structured as an editorial destination instead of a standard archive.
         </p>
-      </div>
-    </div>
-
-    <div class="case-landing-summary">
-      <div class="case-landing-summary__lead">
-        <p class="section-kicker">From Business to Branding</p>
-        <p class="case-landing-summary__text">
-          Through a mix of brand observation, print thinking, and operational detail, these stories explain how visual consistency turns into trust.
-        </p>
-      </div>
-
-      <div class="case-landing-summary__meta">
-        <div>
-          <span class="summary-label">Stories</span>
-          <strong>{String(totalStories).padStart(2, "0")}</strong>
-        </div>
-        <div>
-          <span class="summary-label">Format</span>
-          <strong>Editorial</strong>
-        </div>
-        <div>
-          <span class="summary-label">Source</span>
-          <strong>WordPress</strong>
-        </div>
       </div>
     </div>
   </section>
 
   {
     featuredPost && (
-      <section class="case-featured">
-        <div class="case-featured__rail">
-          <p class="section-kicker">Featured Case</p>
-          <div class="case-featured__number">01</div>
-          <div class="case-featured__meta">
-            <span>{formatPostDate(featuredPost.date)}</span>
-            <span>Case Study</span>
+      <section class="case-showcase">
+        <div class="case-showcase__visual">
+          <p class="case-showcase__eyebrow">Brand Story</p>
+          <div class="case-showcase__panel">
+            <p class="case-showcase__topic">Red &amp; Yellow</p>
+            <h2 class="case-showcase__panel-title" set:html={featuredPost.title?.rendered || "Untitled post"} />
+            <p class="case-showcase__panel-copy">{getPostIntro(featuredPost)}</p>
           </div>
         </div>
 
-        <div class="case-featured__content">
-          <p class="section-kicker">Newest Story</p>
-          <h2 class="case-featured__title">
-            <a href={`/blog/${featuredPost.slug}/`} set:html={featuredPost.title?.rendered || "Untitled post"} />
-          </h2>
-          <p class="case-featured__excerpt">{getPostIntro(featuredPost)}</p>
-          <a class="learn-more" href={`/blog/${featuredPost.slug}/`}>Learn more</a>
+        <div class="case-showcase__stories">
+          <article class="case-story-teaser case-story-teaser--primary">
+            <p class="case-story-teaser__index">1. Featured Case</p>
+            <h3 class="case-story-teaser__title">
+              <a href={`/blog/${featuredPost.slug}/`} set:html={featuredPost.title?.rendered || "Untitled post"} />
+            </h3>
+            <p class="case-story-teaser__meta">{formatPostDate(featuredPost.date)}</p>
+            <p class="case-story-teaser__copy">{getPostIntro(featuredPost)}</p>
+            <a class="learn-more" href={`/blog/${featuredPost.slug}/`}>Learn more</a>
+          </article>
+
+          {
+            secondaryPost && (
+              <article class="case-story-teaser">
+                <p class="case-story-teaser__index">2. Business Story</p>
+                <h3 class="case-story-teaser__title">
+                  <a href={`/blog/${secondaryPost.slug}/`} set:html={secondaryPost.title?.rendered || "Untitled post"} />
+                </h3>
+                <p class="case-story-teaser__meta">{formatPostDate(secondaryPost.date)}</p>
+                <p class="case-story-teaser__copy">{getPostIntro(secondaryPost)}</p>
+                <a class="learn-more" href={`/blog/${secondaryPost.slug}/`}>Learn more</a>
+              </article>
+            )
+          }
         </div>
-
-        <aside class="case-featured__aside">
-          <div>
-            <p class="section-kicker">Story Focus</p>
-            <p class="aside-copy">
-              The lead story sits in its own oversized section, giving the newest WordPress post the same sense of emphasis you would expect from a flagship case study page.
-            </p>
-          </div>
-
-          <div class="case-featured__slug">/{featuredPost.slug}/</div>
-        </aside>
       </section>
     )
   }
 
   <section class="case-archive">
-    <div class="case-archive__header">
-      <div>
-        <p class="eyebrow">Editorial Archive</p>
-        <h2 class="case-archive__title">More Case Studies</h2>
-      </div>
-
-      <p class="case-archive__intro">
-        The remaining stories are presented as large horizontal reading blocks with quieter metadata, generous spacing, and a more premium editorial rhythm.
-      </p>
-    </div>
-
     {
-      remainingPosts.length === 0 ? (
+      archivePosts.length === 0 ? (
         <p class="empty-state">More published case studies will appear here as new WordPress posts go live.</p>
       ) : (
-        <div class="case-bands">
-          {remainingPosts.map((post, index) => (
-            <article class="case-band">
-              <div class="case-band__rail">
-                <div class="case-band__number">{String(index + 2).padStart(2, "0")}</div>
-                <div class="case-band__date">{formatPostDate(post.date)}</div>
+        <div class="case-archive__rows">
+          {archivePosts.map((post, index) => (
+            <article class="case-archive-row">
+              <div class="case-archive-row__label">
+                <p class="case-archive-row__number">{String(index + 3).padStart(2, "0")}</p>
+                <p class="case-archive-row__date">{formatPostDate(post.date)}</p>
               </div>
 
-              <div class="case-band__body">
-                <p class="section-kicker">Business Story</p>
-                <h3 class="case-band__title">
+              <div class="case-archive-row__content">
+                <p class="eyebrow">Business Story</p>
+                <h2 class="case-archive-row__title">
                   <a href={`/blog/${post.slug}/`} set:html={post.title?.rendered || "Untitled post"} />
-                </h3>
+                </h2>
               </div>
 
-              <div class="case-band__summary">
-                <p class="case-band__excerpt">{getPostIntro(post)}</p>
+              <div class="case-archive-row__summary">
+                <p class="case-archive-row__copy">{getPostIntro(post)}</p>
                 <a class="learn-more" href={`/blog/${post.slug}/`}>Learn more</a>
               </div>
             </article>
@@ -134,10 +116,19 @@ const totalStories = posts.length;
     }
   </section>
 
-  <section class="case-closing-note">
-    <p class="section-kicker">Orvalta Notes</p>
-    <p class="case-closing-note__text">
-      Each case study remains read-only and sourced from the live WordPress API, while the presentation here is shaped to feel like a dedicated editorial front door for the Orvalta brand.
-    </p>
+  <section class="case-brand-band">
+    <div class="case-brand-band__grid">
+      <div class="case-brand-band__headline">
+        <p class="eyebrow">From Business to Branding</p>
+        <h2 class="case-brand-band__title">Thoughtful stories for practical brand decisions.</h2>
+      </div>
+
+      <div class="case-brand-band__detail">
+        <p>
+          Every case study remains read-only and sourced from the live WordPress API, while the presentation here is shaped to feel like the existing Orvalta website.
+        </p>
+        <a class="learn-more" href="mailto:hello@orvalta.com">Contact us</a>
+      </div>
+    </div>
   </section>
 </BaseLayout>
