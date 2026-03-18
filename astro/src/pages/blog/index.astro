@@ -8,85 +8,99 @@ import {
 
 const posts = await getAllPosts();
 const [featuredPost, ...remainingPosts] = posts;
+const totalStories = posts.length;
 ---
 
 <BaseLayout
   title="Case Studies | Orvalta"
   description="Editorial case studies from Orvalta, powered by WordPress and rendered in Astro."
 >
-  <section class="case-hero">
-    <div class="case-hero__grid">
+  <section class="case-landing-hero">
+    <div class="case-landing-hero__grid">
       <div>
         <p class="eyebrow">Business Stories</p>
-        <h1 class="case-hero__title">Case Studies</h1>
+        <h1 class="case-landing-hero__title">Case Studies</h1>
       </div>
 
-      <div class="case-hero__support">
+      <div class="case-landing-hero__support">
         <p>
-          A curated look at how brand decisions show up in print, uniforms, packaging, and everyday customer experience.
+          A curated look at how brand decisions show up in print, packaging, uniforms, and everyday customer experience.
         </p>
         <p>
-          Each story is pulled directly from Orvalta's live WordPress content and presented with the calmer, more editorial pacing of the main site.
+          Built like a branded landing page rather than a standard archive, this space turns live WordPress posts into a slower, more editorial Orvalta experience.
         </p>
+      </div>
+    </div>
+
+    <div class="case-landing-summary">
+      <div class="case-landing-summary__lead">
+        <p class="section-kicker">From Business to Branding</p>
+        <p class="case-landing-summary__text">
+          Through a mix of brand observation, print thinking, and operational detail, these stories explain how visual consistency turns into trust.
+        </p>
+      </div>
+
+      <div class="case-landing-summary__meta">
+        <div>
+          <span class="summary-label">Stories</span>
+          <strong>{String(totalStories).padStart(2, "0")}</strong>
+        </div>
+        <div>
+          <span class="summary-label">Format</span>
+          <strong>Editorial</strong>
+        </div>
+        <div>
+          <span class="summary-label">Source</span>
+          <strong>WordPress</strong>
+        </div>
       </div>
     </div>
   </section>
 
   {
     featuredPost && (
-      <section class="featured-case">
-        <div class="featured-case__story">
-          <p class="section-kicker">Featured Story</p>
-          <h2 class="featured-case__title">
-            <a href={`/blog/${featuredPost.slug}/`} set:html={featuredPost.title?.rendered || "Untitled post"} />
-          </h2>
-          <p class="section-copy">{getPostIntro(featuredPost)}</p>
-
-          <div class="featured-meta">
+      <section class="case-featured">
+        <div class="case-featured__rail">
+          <p class="section-kicker">Featured Case</p>
+          <div class="case-featured__number">01</div>
+          <div class="case-featured__meta">
             <span>{formatPostDate(featuredPost.date)}</span>
             <span>Case Study</span>
-            <span>Slug: {featuredPost.slug}</span>
           </div>
+        </div>
 
+        <div class="case-featured__content">
+          <p class="section-kicker">Newest Story</p>
+          <h2 class="case-featured__title">
+            <a href={`/blog/${featuredPost.slug}/`} set:html={featuredPost.title?.rendered || "Untitled post"} />
+          </h2>
+          <p class="case-featured__excerpt">{getPostIntro(featuredPost)}</p>
           <a class="learn-more" href={`/blog/${featuredPost.slug}/`}>Learn more</a>
         </div>
 
-        <aside class="featured-case__aside">
+        <aside class="case-featured__aside">
           <div>
-            <p class="section-kicker">Why it matters</p>
+            <p class="section-kicker">Story Focus</p>
             <p class="aside-copy">
-              Built like the live Orvalta case studies experience: generous spacing, restrained typography, and story-first content blocks instead of a generic blog feed.
+              The lead story sits in its own oversized section, giving the newest WordPress post the same sense of emphasis you would expect from a flagship case study page.
             </p>
           </div>
 
-          <ul class="aside-list">
-            <li>
-              <strong>Editorial layout</strong>
-              Structured sections and slower visual pacing.
-            </li>
-            <li>
-              <strong>Luxury tone</strong>
-              Premium cream surfaces, serif-heavy headlines, and quiet detail.
-            </li>
-            <li>
-              <strong>Read-only architecture</strong>
-              The same Astro + WordPress API flow remains untouched underneath.
-            </li>
-          </ul>
+          <div class="case-featured__slug">/{featuredPost.slug}/</div>
         </aside>
       </section>
     )
   }
 
-  <section class="editorial-section">
-    <div class="section-heading">
+  <section class="case-archive">
+    <div class="case-archive__header">
       <div>
-        <p class="eyebrow">Case Study Archive</p>
-        <h2>More Stories</h2>
+        <p class="eyebrow">Editorial Archive</p>
+        <h2 class="case-archive__title">More Case Studies</h2>
       </div>
 
-      <p class="section-copy">
-        Published WordPress posts continue below in a more structured, landing-page style format inspired by Orvalta's existing editorial pages.
+      <p class="case-archive__intro">
+        The remaining stories are presented as large horizontal reading blocks with quieter metadata, generous spacing, and a more premium editorial rhythm.
       </p>
     </div>
 
@@ -94,17 +108,23 @@ const [featuredPost, ...remainingPosts] = posts;
       remainingPosts.length === 0 ? (
         <p class="empty-state">More published case studies will appear here as new WordPress posts go live.</p>
       ) : (
-        <div class="editorial-grid">
+        <div class="case-bands">
           {remainingPosts.map((post, index) => (
-            <article class="editorial-block">
-              <div class="case-number">{String(index + 2).padStart(2, "0")}</div>
+            <article class="case-band">
+              <div class="case-band__rail">
+                <div class="case-band__number">{String(index + 2).padStart(2, "0")}</div>
+                <div class="case-band__date">{formatPostDate(post.date)}</div>
+              </div>
 
-              <div>
-                <p class="section-kicker">{formatPostDate(post.date)}</p>
-                <h3 class="editorial-title">
+              <div class="case-band__body">
+                <p class="section-kicker">Business Story</p>
+                <h3 class="case-band__title">
                   <a href={`/blog/${post.slug}/`} set:html={post.title?.rendered || "Untitled post"} />
                 </h3>
-                <p class="editorial-excerpt">{getPostIntro(post)}</p>
+              </div>
+
+              <div class="case-band__summary">
+                <p class="case-band__excerpt">{getPostIntro(post)}</p>
                 <a class="learn-more" href={`/blog/${post.slug}/`}>Learn more</a>
               </div>
             </article>
@@ -112,5 +132,12 @@ const [featuredPost, ...remainingPosts] = posts;
         </div>
       )
     }
+  </section>
+
+  <section class="case-closing-note">
+    <p class="section-kicker">Orvalta Notes</p>
+    <p class="case-closing-note__text">
+      Each case study remains read-only and sourced from the live WordPress API, while the presentation here is shaped to feel like a dedicated editorial front door for the Orvalta brand.
+    </p>
   </section>
 </BaseLayout>

@@ -80,7 +80,7 @@ async function getAllPosts() {
       status: "publish",
       orderby: "date",
       order: "desc",
-      _fields: "id,slug,date,link,title,excerpt"
+      _fields: "id,slug,date,link,title,excerpt,content"
     });
 
     const pagePosts = await response.json();
@@ -123,19 +123,46 @@ function formatPostDate(dateString) {
 }
 
 function getPostIntro(post) {
-  const excerptHtml = post?.excerpt?.rendered || "";
-  const excerptText = excerptHtml
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/\[[^\]]+\]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  const excerptText = toPlainText(post?.excerpt?.rendered || "");
 
   if (excerptText) {
-    return excerptText;
+    return trimPreview(excerptText);
+  }
+
+  const contentText = toPlainText(post?.content?.rendered || "");
+
+  if (contentText) {
+    return trimPreview(contentText);
   }
 
   return "A closer look at the ideas, choices, and details shaping this Orvalta case study.";
+}
+
+function toPlainText(html) {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'")
+    .replace(/\[[^\]]+\]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function trimPreview(text, maxLength = 220) {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  const shortened = text.slice(0, maxLength);
+  const lastSpaceIndex = shortened.lastIndexOf(" ");
+
+  if (lastSpaceIndex <= 0) {
+    return `${shortened}...`;
+  }
+
+  return `${shortened.slice(0, lastSpaceIndex)}...`;
 }
 
 export {
