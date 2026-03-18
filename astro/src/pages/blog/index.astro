@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatPostDate, getAllPosts } from "../../lib/wordpress.js";
+
+const posts = await getAllPosts();
+---
+
+<BaseLayout title="Blog | Orvalta" description="Published posts from WordPress, rendered in Astro.">
+  <section class="page-card">
+    <p class="eyebrow">Blog</p>
+    <h1>Published Posts</h1>
+    <p class="lede">
+      This index is generated from the live WordPress REST API at build time.
+    </p>
+
+    {
+      posts.length === 0 ? (
+        <p class="post-meta" style="margin-top: 2rem;">No published posts were returned by WordPress.</p>
+      ) : (
+        <ul class="post-list">
+          {posts.map((post) => (
+            <li>
+              <a class="post-link" href={`/blog/${post.slug}/`}>
+                <div class="post-title" set:html={post.title?.rendered || "Untitled post"} />
+                <div class="post-meta">{formatPostDate(post.date)}</div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>

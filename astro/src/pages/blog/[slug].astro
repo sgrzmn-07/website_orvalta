@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatPostDate, getAllPosts, getPostBySlug } from "../../lib/wordpress.js";
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+
+  return posts.map((post) => ({
+    params: {
+      slug: post.slug
+    }
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await getPostBySlug(slug);
+
+if (!post) {
+  throw new Error(`Post not found for slug: ${slug}`);
+}
+---
+
+<BaseLayout title="Post | Orvalta" description="WordPress post rendered by Astro.">
+  <article class="page-card">
+    <a class="post-back" href="/blog/">&larr; Back to blog</a>
+    <p class="eyebrow">{formatPostDate(post.date)}</p>
+    <h1 set:html={post.title?.rendered || "Untitled post"} />
+    <div class="post-content" set:html={post.content?.rendered || ""} />
+  </article>
+</BaseLayout>
