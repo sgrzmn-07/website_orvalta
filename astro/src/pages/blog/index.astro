@@ -8,6 +8,7 @@ import {
 
 const posts = await getAllPosts();
 const [featuredPost, secondaryPost, ...archivePosts] = posts;
+const showcaseImage = "https://orvalta.com/wp-content/uploads/2025/11/slider-08.webp";
 ---
 
 <BaseLayout
@@ -50,6 +51,13 @@ const [featuredPost, secondaryPost, ...archivePosts] = posts;
         <div class="case-showcase__visual">
           <p class="case-showcase__eyebrow">Brand Story</p>
           <div class="case-showcase__panel">
+            <img
+              class="case-showcase__image"
+              src={showcaseImage}
+              alt="Orvalta case study hero"
+              loading="lazy"
+              decoding="async"
+            />
             <p class="case-showcase__topic">Red &amp; Yellow</p>
             <h2 class="case-showcase__panel-title" set:html={featuredPost.title?.rendered || "Untitled post"} />
             <p class="case-showcase__panel-copy">{getPostIntro(featuredPost)}</p>

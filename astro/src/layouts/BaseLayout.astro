@@ -6,12 +6,14 @@ const {
   description = "Read-only Astro frontend for WordPress content."
 } = Astro.props;
 
+const logoSrc = "https://orvalta.com/wp-content/uploads/2022/03/orv-org-150.png";
+
 const navItems = [
   { label: "Home", href: "https://orvalta.com/" },
   { label: "Inside Orvalta", href: "https://orvalta.com/about-us/" },
   { label: "All Products", href: "https://orvalta.com/products/" },
   { label: "Case Studies", href: "/blog/" },
-  { label: "Contact Us", href: "mailto:hello@orvalta.com" }
+  { label: "Contact Us", href: "https://orvalta.com/contact-orvalta/" }
 ];
 ---
 
@@ -27,7 +29,15 @@ const navItems = [
     <header class="site-header">
       <div class="site-shell header-shell">
         <a class="brand-wordmark" href="/blog/" aria-label="Orvalta Case Studies">
-          Orvalta
+          <img
+            class="brand-logo"
+            src={logoSrc}
+            alt="Orvalta"
+            width="150"
+            height="150"
+            loading="eager"
+            decoding="async"
+          />
         </a>
 
         <nav class="site-nav" aria-label="Primary">
