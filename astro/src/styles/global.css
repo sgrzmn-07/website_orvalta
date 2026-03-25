@@ -48,11 +48,9 @@ img {
 }
 
 .site-header {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 10;
-  backdrop-filter: blur(18px);
-  background: rgba(248, 242, 232, 0.82);
+  background: #ffffff;
   border-bottom: 1px solid var(--line);
 }
 
@@ -60,8 +58,8 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  padding: 1rem 0;
+  gap: 2rem;
+  padding: 1.55rem 0 1.7rem;
 }
 
 .brand-wordmark {
@@ -71,47 +69,92 @@ img {
 
 .brand-logo {
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 110px;
+  height: auto;
   object-fit: contain;
 }
 
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: 1.9rem;
   flex-wrap: wrap;
   justify-content: center;
+  margin-left: auto;
 }
 
 .site-nav a,
 .catalog-link,
-.footer-link {
+.footer-link,
+.search-link {
   color: var(--muted);
   transition: color 0.2s ease;
 }
 
 .site-nav a {
+  position: relative;
+  padding: 0.5rem 0;
   font-size: 0.92rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-weight: 400;
 }
 
 .site-nav a:hover,
 .site-nav .is-active,
 .catalog-link:hover,
-.footer-link:hover {
+.footer-link:hover,
+.search-link:hover {
   color: var(--text);
 }
 
+.site-nav .is-active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1.4rem;
+  width: 72px;
+  height: 2px;
+  background: rgba(32, 32, 32, 0.7);
+  transform: translateX(-50%);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 1rem;
+}
+
 .catalog-link {
-  border-bottom: 1px solid rgba(127, 90, 45, 0.35);
-  padding-bottom: 0.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 0 1.7rem;
+  background: #9d2235;
+  color: #ffffff;
+  border: 1px solid #9d2235;
+  font-weight: 500;
   white-space: nowrap;
 }
 
+.search-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(29, 23, 19, 0.18);
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.search-link svg {
+  width: 18px;
+  height: 18px;
+}
+
 .page-shell {
-  padding: 3.5rem 0 5rem;
+  padding: 0 0 5rem;
 }
 
 .eyebrow {
@@ -147,19 +190,41 @@ h1 {
 }
 
 .case-page-hero {
-  padding: 1rem 0 3rem;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(198, 184, 165, 0.12) 0,
+      rgba(198, 184, 165, 0.12) 2px,
+      rgba(255, 255, 255, 0.65) 2px,
+      rgba(255, 255, 255, 0.65) 8px
+    );
+  border-bottom: 1px solid var(--line);
+}
+
+.case-page-hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+  gap: 3rem;
+  align-items: center;
+  min-height: 190px;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .case-page-hero__heading {
-  max-width: 56rem;
+  display: flex;
+  align-items: center;
 }
 
 .case-page-hero__tagline {
-  max-width: 42rem;
-  margin: 1rem 0 0;
+  margin: 0;
   color: var(--muted);
-  font-size: 1.1rem;
-  line-height: 1.75;
+  font-size: 1rem;
+  line-height: 1.9;
+  text-align: center;
 }
 
 .case-editorial-intro {
@@ -541,6 +606,7 @@ h1 {
 
 @media (max-width: 960px) {
   .header-shell,
+  .case-page-hero__inner,
   .case-editorial-intro__grid,
   .case-showcase,
   .case-archive-row,
@@ -554,6 +620,19 @@ h1 {
     justify-items: start;
   }
 
+  .site-nav {
+    margin-left: 0;
+    gap: 1.1rem 1.4rem;
+  }
+
+  .header-actions {
+    margin-left: 0;
+  }
+
+  .site-nav .is-active::after {
+    bottom: -0.75rem;
+  }
+
   .case-archive-row__summary {
     padding-top: 0;
   }
@@ -561,11 +640,31 @@ h1 {
 
 @media (max-width: 720px) {
   .page-shell {
-    padding: 2.5rem 0 4rem;
+    padding: 0 0 4rem;
   }
 
   .site-nav {
-    gap: 0.9rem 1.2rem;
+    gap: 0.75rem 1rem;
+  }
+
+  .brand-logo {
+    width: 88px;
+  }
+
+  .catalog-link {
+    min-height: 48px;
+    padding: 0 1.2rem;
+  }
+
+  .case-page-hero__inner {
+    min-height: auto;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    gap: 1.5rem;
+  }
+
+  .case-page-hero__tagline {
+    text-align: left;
   }
 
   .case-showcase__panel,
